@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samady_Register_Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Kantumruy Pro', sans-serif; }
+        .khmer-row { line-height: 1.8; }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d8dd; border-radius: 4px; }
+        .modal-backdrop { opacity: 0; transition: opacity 0.3s ease-out; pointer-events: none; }
+        .modal-backdrop.active { opacity: 1; pointer-events: auto; }
+        .modal-content { transform: scale(0.95) translateY(10px); opacity: 0; transition: all 0.3s ease-out; }
+        .modal-content.active { transform: scale(1) translateY(0); opacity: 1; }
+        .data-row { transition: all 0.2s ease; }
+        .data-row:hover { background-color: #f8fafc; transform: translateX(4px); }
+    </style>
+</head>
+<body class="bg-[#f8fafc] p-6">
+
+    <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">Samady_Register_Form</h1>
+                <p class="text-gray-500 text-sm">Manage your enrollment records efficiently</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="exportList()" class="bg-white border border-[#d1d8dd] px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition shadow-sm flex items-center gap-2">
+                    <i data-lucide="download" class="w-4 h-4"></i> Export CSV
+                </button>
+                <a href="index.html" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition shadow-sm flex items-center gap-2">
+                    <i data-lucide="plus" class="w-4 h-4"></i> New Enrollment
+                </a>
+            </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-t-xl border-x border-t border-[#d1d8dd] flex flex-wrap gap-4 items-center">
+            <div class="relative flex-1 min-w-[200px]">
+                <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+                <input type="text" id="searchInput" placeholder="Search applicant, land number..." 
+                    class="w-full border border-gray-200 rounded-md pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <select id="statusFilter" class="border border-gray-200 rounded-md px-3 py-2 text-sm outline-none bg-gray-50">
+                <option value="">ភូមិ / Village</option>
+              <option value="ភូមិសំរោង">ភូមិសំរោង</option>
+              <option value="ភូមិឃ្មួញ">ភូមិឃ្មួញ</option>
+              <option value="ភូមិបន្លាស្អិត">ភូមិបន្លាស្អិត</option>
+              <option value="ភូមិអន្លង់ក្ងាន">ភូមិអន្លង់ក្ងាន</option>
+              <option value="ភូមិត្រពាំងរាំងចាស់">ភូមិត្រពាំងរាំងចាស់</option>
+              <option value="ភូមិត្រពាំងរាំងថ្មី">ភូមិត្រពាំងរាំងថ្មី</option>
+              <option value="ភូមិសែនសុខទី១">ភូមិសែនសុខទី១</option>
+              <option value="ភូមិសែនសុខទី២">ភូមិសែនសុខទី២</option>
+              <option value="ភូមិសែនសុខទី៣">ភូមិសែនសុខទី៣</option>
+              <option value="ភូមិសែនសុខទី៤">ភូមិសែនសុខទី៤</option>
+              <option value="ភូមិសែនសុខទី៥">ភូមិសែនសុខទី៥</option>
+              <option value="ភូមិសែនសុខទី៦">ភូមិសែនសុខទី៦</option>
+              <option value="ភូមិសែនសុខទី៧">ភូមិសែនសុខទី៧</option>
+            </select>
+        </div>
+
+        <div class="bg-white border border-[#d1d8dd] rounded-b-xl shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left min-w-[1600px] border-collapse">
+            <thead class="bg-gray-50 border-b border-[#d1d8dd] text-xs uppercase text-gray-500">
+                <tr>
+                    <th class="px-6 py-4 font-semibold whitespace-nowrap">ប័ណ្ណL-Map</th>
+                    <th class="px-6 py-4 font-semibold whitespace-nowrap">ប័ណ្ណដីចាស់/ប័ណ្ណL-Mapចាស់</th>
+                    <th class="px-6 py-4 font-semibold whitespace-nowrap">លេខក្បាលដី</th>
+                    <th class="px-6 py-4 font-semibold whitespace-nowrap">ឈ្មោះអ្នកស្នើសុំ</th>
+                    <th class="px-6 py-4 font-semibold whitespace-nowrap">ឈ្មោះអ្នកលក់</th>
+                    <th class="px-6 py-4 font-semibold whitespace-nowrap">ឈ្មោះអ្នកទិញ</th>
+                    <th class="px-6 py-4 font-semibold whitespace-nowrap">ឈ្មោះធនាគារ រឺឯកជន</th>
+                    <th class="px-6 py-4 font-semibold whitespace-nowrap">ភូមិ</th>
+                    <th class="px-6 py-4 font-semibold text-center whitespace-nowrap">ប្រភេទសេវា</th>
+                    <th class="px-6 py-4 text-right sticky right-0 bg-gray-50 border-l border-[#d1d8dd] shadow-[-6px_0_10px_-8px_rgba(0,0,0,0.1)]">Action</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody" class="divide-y divide-gray-100 bg-white">
+                </tbody>
+        </table>
+    </div>
+    
+    <div id="emptyState" class="hidden py-12 text-center">
+        <i data-lucide="database" class="w-12 h-12 text-gray-300 mx-auto mb-2"></i>
+        <p class="text-gray-500">No records found in database.</p>
+    </div>
+</div>
+
+<div id="detailModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="modal-backdrop absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeModal()"></div>
+    <div class="modal-content bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col relative z-10">
+        
+        <div class="bg-blue-600 px-6 py-4 flex items-center justify-between">
+            <div>
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="file-text"></i> Details
+                </h2>
+                <p id="modalSubtitle" class="text-blue-100 text-xs font-mono"></p>
+            </div>
+            <button onclick="closeModal()" class="text-white hover:bg-white/20 rounded-full p-1"><i data-lucide="x"></i></button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+            <div id="modalStatusBadge" class="mb-4"></div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="detailGrid">
+                </div>
+        </div>
+
+        <div class="border-t p-4 bg-gray-50 flex justify-between">
+            <button onclick="deleteCurrentRecord()" class="text-red-600 hover:bg-red-50 px-4 py-2 rounded-lg flex items-center gap-2">
+                <i data-lucide="trash-2" class="w-4 h-4"></i> Delete
+            </button>
+            <div class="flex gap-2">
+                <button onclick="closeModal()" class="px-4 py-2 border rounded-lg hover:bg-gray-100">Cancel</button>
+                <button onclick="editFromModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+                    <i data-lucide="edit-3" class="w-4 h-4"></i> Edit Record
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div id="toast" class="fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="/JS/home.js"></script>
+</body>
+</html>
