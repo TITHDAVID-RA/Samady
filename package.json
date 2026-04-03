@@ -5,8 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -15,8 +14,8 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "better-sqlite3": "^9.4.3",
     "cors": "^2.8.6",
-    "express": "^5.2.1",
-    "sqlite3": "^5.1.6"
+    "express": "^5.2.1"
   }
 }
