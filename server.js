@@ -4,7 +4,9 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const db = new Database('/app/data/frappe_desk.db');
+
+// SQLite database (Render has persistent disk)
+const db = new Database('./frappe_desk.db');
 
 app.use(cors());
 app.use(express.json());
@@ -50,19 +52,14 @@ const initDb = () => {
 };
 initDb();
 
-// GET Services (Search logic) - FIXED VERSION
+// GET Services (Search logic) - FIXED for SQLite
 app.get('/api/services', (req, res) => {
     try {
         const search = req.query.q || '';
-        
-        // SQLite LIKE is case-insensitive by default (no ILIKE needed!)
         const stmt = db.prepare(`SELECT service_name FROM khmer_services 
                                  WHERE service_name LIKE ? 
                                  LIMIT 10`);
-        
-        // Add % wildcards for partial matching
         const rows = stmt.all(`%${search}%`);
-        
         res.json(rows.map(row => row.service_name));
     } catch (err) {
         console.error("Search error:", err);
@@ -158,7 +155,7 @@ app.delete('/api/registrations/:id', (req, res) => {
     }
 });
 
-// Default route - serve login.html
+// Default route - serve login.html FIRST
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'HTML', 'login.html'));
 });
@@ -166,9 +163,4 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
-});
-
-// Default route - serve login.html FIRST
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'HTML', 'login.html'));
 });

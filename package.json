@@ -4,13 +4,8 @@
   "description": "Frappe Desk Registration System",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
-    "postinstall": "npm rebuild better-sqlite3 --build-from-source"
+    "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "engines": {
     "node": ">=18.0.0"
   },
