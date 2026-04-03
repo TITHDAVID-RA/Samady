@@ -4,7 +4,7 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const db = new Database('./frappe_desk.db');
+const db = new Database('/app/data/frappe_desk.db');
 
 app.use(cors());
 app.use(express.json());
