@@ -1,12 +1,18 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 const db = new sqlite3.Database('./frappe_desk.db');
 
 app.use(cors());
 app.use(express.json());
+
+// Serve static files
+app.use(express.static('HTML'));
+app.use('/js', express.static('JS'));
+app.use('/css', express.static('.'));
 
 // Initialize Database
 db.serialize(() => {
@@ -45,7 +51,6 @@ db.serialize(() => {
 app.get('/api/services', (req, res) => {
     const search = req.query.q || '';
     
-    // We use the LIKE operator with % for partial Khmer matching
     const sql = `SELECT service_name FROM khmer_services 
                  WHERE service_name LIKE ? 
                  LIMIT 10`;
@@ -55,12 +60,11 @@ app.get('/api/services', (req, res) => {
             res.status(500).json({ error: err.message });
             return;
         }
-        // Send back just the names as a simple array
         res.json(rows.map(row => row.service_name));
     });
 });
 
-// 1. GET ALL
+// GET ALL
 app.get('/api/registrations', (req, res) => {
     db.all("SELECT * FROM registrations ORDER BY id DESC", [], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -68,7 +72,7 @@ app.get('/api/registrations', (req, res) => {
     });
 });
 
-// 2. GET SINGLE
+// GET SINGLE
 app.get('/api/registrations/:id', (req, res) => {
     db.get("SELECT * FROM registrations WHERE id = ?", [req.params.id], (err, row) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -77,11 +81,10 @@ app.get('/api/registrations/:id', (req, res) => {
     });
 });
 
-// 3. POST (Create)
+// POST (Create)
 app.post('/api/registrations', (req, res) => {
     const b = req.body;
     
-    // COUNT: 21 Columns and 21 Question Marks
     const sql = `INSERT INTO registrations (
         village, landNumber, regNumber, date, unitNumber, floor, LMap, oldMap, 
         applicantName, sellerName, buyerName, serviceType, documentHolder, aj1, 
@@ -89,7 +92,6 @@ app.post('/api/registrations', (req, res) => {
         amountUSD, amountKHR, otherInfo
     ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`; 
 
-    // COUNT: 21 Items in the array
     const params = [
         b.village, b.landNumber, b.regNumber, b.date, b.unitNumber, b.floor, b.LMap, b.oldMap,
         b.applicantName, b.sellerName, b.buyerName, b.serviceType, b.documentHolder, b.aj1, 
@@ -106,10 +108,10 @@ app.post('/api/registrations', (req, res) => {
     });
 });
 
-// 4. PUT (Update)
+// PUT (Update)
 app.put('/api/registrations/:id', (req, res) => {
     const b = req.body;
-    // Added buyerName=? to the update string
+    
     const sql = `UPDATE registrations SET 
         village=?, landNumber=?, regNumber=?, date=?, unitNumber=?, floor=?, LMap=?, oldMap=?, 
         applicantName=?, sellerName=?, buyerName=?, serviceType=?, documentHolder=?, aj1=?, 
@@ -134,7 +136,7 @@ app.put('/api/registrations/:id', (req, res) => {
     });
 });
 
-// 5. DELETE
+// DELETE
 app.delete('/api/registrations/:id', (req, res) => {
     db.run("DELETE FROM registrations WHERE id = ?", [req.params.id], function(err) {
         if (err) return res.status(500).json({ error: err.message });
@@ -142,4 +144,12 @@ app.delete('/api/registrations/:id', (req, res) => {
     });
 });
 
-app.listen(3000, () => console.log('🚀 Server running on http://localhost:3000'));
+// 🔥 CHANGED: Default route now serves LOGIN.html first
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'HTML', 'login.html'));
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+});
