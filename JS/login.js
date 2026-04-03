@@ -15,6 +15,11 @@ const VALID_CREDENTIALS = {
     email: 'admin@example.com',
     password: '123'
 };
+
+// If already logged in, skip login page
+if (localStorage.getItem('auth_token')) {
+    window.location.href = 'home.html';
+}
 function hideError() {
     errorToast.classList.add('hidden');
     errorToast.classList.remove('flex');
