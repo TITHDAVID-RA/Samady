@@ -3,7 +3,7 @@
 lucide.createIcons();
 
 // 1. Declare these at the very top of your <script> tag
-const API_URL = 'http://localhost:3000/api';
+const API_URL = '/api';
 let isEditMode = false;
 let editId = null;
 let debounceTimer;
@@ -170,8 +170,8 @@ saveBtn.addEventListener("click", async () => {
 
     // 3. Determine URL and Method (POST for new, PUT for edit)
     const url = isEditMode
-        ? `http://localhost:3000/api/registrations/${editId}`
-        : 'http://localhost:3000/api/registrations';
+        ? `api/registrations/${editId}`
+        : 'api/registrations';
 
     const method = isEditMode ? 'PUT' : 'POST';
 

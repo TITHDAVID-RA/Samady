@@ -1,6 +1,6 @@
 lucide.createIcons();
 
-const API_URL = 'http://localhost:3000/api';
+const API_URL = '/api';
 let records = [];
 let filteredRecords = [];
 let currentRecord = null;
@@ -224,7 +224,7 @@ async function exportList() {
         if (window.lucide) lucide.createIcons();
 
         // 2. Fetch data from API
-        const response = await fetch('http://localhost:3000/api/registrations');
+        const response = await fetch('/api/registrations');
         const data = await response.json();
 
         if (!data || data.length === 0) {
